@@ -60,7 +60,7 @@ exports.getPermissionIds = function (microappInfo, permissionData) {
 exports.strapiUpdate = async function (id, microapp, token) {
     if (!id) return
     if (!microapp) return
-    if (!token) return
+    // if (!token) return
 
     return await axios
         .put(`${baseUrl}/api/micro-apps/${id}`, {data:microapp}, {
