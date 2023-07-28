@@ -18,7 +18,6 @@ app.post('/update', (req, res) => {
     microapp.permissions_ = getPermissionIds(microapp, collectionsData.permissions.data)
     microapp.countries_ = getItemIds(microapp.countries[0].name, collectionsData.countries.data)
 
-    res.status(200).json(microapp)
     strapiUpdate(microappId, microapp, token)
         .then(data => res.status(200))
         .catch(err => res.status(400))
