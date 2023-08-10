@@ -57,15 +57,12 @@ exports.getPermissionIds = function (microappInfo, permissionData) {
     })
     return list
 }
-exports.strapiUpdate = async function (id, microapp, token) {
+exports.strapiUpdate = async function (id, microapp) {
     if (!id) return
     if (!microapp) return
-    // if (!token) return
 
-    return await axios
-        .put(`${baseUrl}/api/micro-apps/${id}`, {data:microapp}, {
-            headers: { Authorization: `Bearer ${token}` },
-        })
+    return axios
+        .put(`${baseUrl}/api/micro-apps/${id}`, {data:microapp})
         .then((data) => {return Promise.resolve(data.data)})
         .catch((err) => {return Promise.reject(err)});
 }
