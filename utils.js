@@ -100,7 +100,7 @@ exports.setMicroAppState = async (microapp, id) => {
           return returnTemplate(state, "", microapp?.live_date || null);
         case "suspended":
           if (!microapp.suspended) return null;
-          return returnTemplate(state, "", microapp?.suspension_date || null);
+          return returnTemplate(state, microapp?.suspension_reason || "", microapp?.suspension_date || null);
         case "deleted":
           if (!microapp.deleted) return null;
           return returnTemplate(state, "", microapp?.updatedAt || null);
@@ -129,4 +129,17 @@ async function getRequests(id) {
       id
   );
   return result.data?.data[0] || {};
+}
+
+
+function logError(appId, error) {
+  File.writeFile(
+    'sds', 
+    JSON.stringify(error),
+    (err) => {
+      if (err) {
+        console.log(err);
+      }
+    }
+  )
 }

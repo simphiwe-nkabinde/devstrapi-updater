@@ -34,7 +34,7 @@ app.post("/update", async (req, res) => {
   delete microapp.icon; //if icon is not removed, strapi will remove existing icon image
 
   microapp.languages_ = getItemIds(
-    microapp.languages[0].name,
+    microapp.languages[0]?.name,
     collectionsData.languages.data
   );
   microapp.categories_ = getItemIds(
@@ -46,7 +46,7 @@ app.post("/update", async (req, res) => {
     collectionsData.permissions.data
   );
   microapp.countries_ = getItemIds(
-    microapp.countries[0].name,
+    microapp.countries[0]?.name,
     collectionsData.countries.data
   );
 
