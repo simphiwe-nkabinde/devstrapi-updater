@@ -5,6 +5,7 @@ const {
   getPermissionIds,
   strapiUpdate,
   setMicroAppState,
+  getWhitelistArray,
 } = require("./utils");
 require("dotenv").config();
 const path = require("path");
@@ -49,6 +50,7 @@ app.post("/update", async (req, res) => {
     microapp.countries[0]?.name,
     collectionsData.countries.data
   );
+  microapp.whitelist_ = getWhitelistArray(microapp.whitelist[0]?.links)
 
   microapp.lifecycle = await setMicroAppState(microapp, microappId);
   
@@ -58,10 +60,11 @@ app.post("/update", async (req, res) => {
     permissions_: [...microapp.permissions_],
     countries_: [...microapp.countries_],
     lifecycle: [...microapp.lifecycle],
+    whitelist_: [...microapp.whitelist_]
   };
   strapiUpdate(microappId, data)
     .then((data) => res.status(200).json({ ...data }))
-    .catch((err) => res.status(400).json({ ...err }));
+    .catch((err) => res.status(400).json(err));
 });
 
 app.listen(process.env.PORT, () => {

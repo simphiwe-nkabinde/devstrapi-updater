@@ -74,6 +74,20 @@ exports.getPermissionIds = function (microappInfo, permissionData) {
   });
   return list;
 };
+/**
+ * coverts json array to array of objects with url property
+ * @param {JSON} jsonWhitelist JSON string array
+ * @returns {[{url: string}]}
+ */
+exports.getWhitelistArray = function (jsonWhitelist) {
+  if (!isJSON(jsonWhitelist)) {
+    if (typeof jsonWhitelist == 'string') return [{url: jsonWhitelist}]
+    else return []
+  }
+  const strArr = JSON.parse(jsonWhitelist);
+  if (!Array.isArray(strArr)) return []
+  return strArr.map(item => ({ url: item }))
+}
 exports.strapiUpdate = async function (id, microapp) {
   if (!id) return;
   if (!microapp) return;
@@ -125,8 +139,8 @@ function returnTemplate(state, comment, date) {
 async function getRequests(id) {
   const result = await axios.get(
     process.env.STRAPI_URL +
-      "/api/publication-requests?populate=*&filters[microapp_id][$eq]=" +
-      id
+    "/api/publication-requests?populate=*&filters[microapp_id][$eq]=" +
+    id
   );
   return result.data?.data[0] || {};
 }
@@ -134,7 +148,7 @@ async function getRequests(id) {
 
 function logError(appId, error) {
   File.writeFile(
-    'sds', 
+    'sds',
     JSON.stringify(error),
     (err) => {
       if (err) {
@@ -142,4 +156,18 @@ function logError(appId, error) {
       }
     }
   )
+}
+
+/**
+ * returns true if value is JSON string else returns false
+ * @param {*} value
+ * @returns {Boolean}
+ */
+function isJSON(value) {
+  try {
+    JSON.parse(value);
+  } catch (e) {
+    return false;
+  }
+  return true;
 }
