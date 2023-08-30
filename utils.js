@@ -108,7 +108,7 @@ exports.setMicroAppState = async (microapp, id) => {
     .map((state) => {
       switch (state) {
         case "development":
-          return returnTemplate(state, "", microapp?.createdAt || null);
+          return returnTemplate(state, "app in development, ready for testing", microapp?.createdAt || null);
         case "published":
           if (!microapp.published) return null;
           return returnTemplate(state, "", microapp?.live_date || null);
@@ -120,7 +120,7 @@ exports.setMicroAppState = async (microapp, id) => {
           return returnTemplate(state, "", microapp?.updatedAt || null);
         case "requested to publish":
           if (!requests.hasOwnProperty("attributes")) return null;
-          return returnTemplate(state, "", microapp?.rtp_date || null);
+          return returnTemplate(state, "", microapp?.rtp_date || requests.attributes.updatedAt);
         default:
           return null;
       }

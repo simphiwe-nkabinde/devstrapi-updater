@@ -60,7 +60,8 @@ app.post("/update", async (req, res) => {
     permissions_: [...microapp.permissions_],
     countries_: [...microapp.countries_],
     lifecycle: [...microapp.lifecycle],
-    whitelist_: [...microapp.whitelist_]
+    whitelist_: [...microapp.whitelist_],
+    user: Number(microapp.user_id)
   };
   strapiUpdate(microappId, data)
     .then((data) => res.status(200).json({ ...data }))
