@@ -6,6 +6,7 @@ const {
   strapiUpdate,
   setMicroAppState,
   getWhitelistArray,
+  getProfileId,
 } = require("./utils");
 require("dotenv").config();
 const path = require("path");
@@ -54,6 +55,8 @@ app.post("/update", async (req, res) => {
 
   microapp.lifecycle = await setMicroAppState(microapp, microappId);
   
+  const profileId = await getProfileId(microapp.user_id)
+  
   const data = {
     languages_: [...microapp.languages_],
     categories_: [...microapp.categories_],
@@ -61,7 +64,8 @@ app.post("/update", async (req, res) => {
     countries_: [...microapp.countries_],
     lifecycle: [...microapp.lifecycle],
     whitelist_: [...microapp.whitelist_],
-    user: Number(microapp.user_id)
+    user: Number(microapp.user_id),
+    profile_: profileId
   };
   strapiUpdate(microappId, data)
     .then((data) => res.status(200).json({ ...data }))

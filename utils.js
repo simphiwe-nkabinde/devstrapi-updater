@@ -1,5 +1,6 @@
 const axios = require("axios");
 require("dotenv").config();
+const fs = require('fs')
 
 const baseUrl = process.env.STRAPI_URL;
 
@@ -145,17 +146,19 @@ async function getRequests(id) {
   return result.data?.data[0] || {};
 }
 
+exports.getProfileId = async function (userId) {
+  return await axios.get(process.env.STRAPI_URL + `/api/profiles?filters[user_id][$eq]=${userId}`)
+  .then(res => {
+    if (res.data.data.length) return res.data.data[0].id
+    return null
+  }).catch(err => err)
+}
 
-function logError(appId, error) {
-  File.writeFile(
-    'sds',
-    JSON.stringify(error),
-    (err) => {
-      if (err) {
-        console.log(err);
-      }
-    }
-  )
+exports.logError = function (appId, error) {
+  const errorJson = JSON.stringify(error, null, 2)
+  fs.writeFile('error.txt', errorJson, err => {
+    if (err) console.error('Error writing to log file:', err)
+  })
 }
 
 /**
