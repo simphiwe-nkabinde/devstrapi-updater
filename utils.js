@@ -1,6 +1,6 @@
 const axios = require("axios");
 require("dotenv").config();
-const fs = require('fs')
+const fs = require("fs");
 
 const baseUrl = process.env.STRAPI_URL;
 
@@ -44,7 +44,7 @@ exports.getItemIds = function (selectedItems, collectionData) {
   if (!selectedItems.length) return [];
   if (!Array.isArray(collectionData)) return [];
   if (!collectionData.length) return [];
-
+  
   const list = collectionData.filter((item) => {
     if (
       selectedItems
@@ -82,13 +82,13 @@ exports.getPermissionIds = function (microappInfo, permissionData) {
  */
 exports.getWhitelistArray = function (jsonWhitelist) {
   if (!isJSON(jsonWhitelist)) {
-    if (typeof jsonWhitelist == 'string') return [{url: jsonWhitelist}]
-    else return []
+    if (typeof jsonWhitelist == "string") return [{ url: jsonWhitelist }];
+    else return [];
   }
   const strArr = JSON.parse(jsonWhitelist);
-  if (!Array.isArray(strArr)) return []
-  return strArr.map(item => ({ url: item }))
-}
+  if (!Array.isArray(strArr)) return [];
+  return strArr.map((item) => ({ url: item }));
+};
 exports.strapiUpdate = async function (id, microapp) {
   if (!id) return;
   if (!microapp) return;
@@ -109,19 +109,31 @@ exports.setMicroAppState = async (microapp, id) => {
     .map((state) => {
       switch (state) {
         case "development":
-          return returnTemplate(state, "app in development, ready for testing", microapp?.createdAt || null);
+          return returnTemplate(
+            state,
+            "app in development, ready for testing",
+            microapp?.createdAt || null
+          );
         case "published":
           if (!microapp.published) return null;
           return returnTemplate(state, "", microapp?.live_date || null);
         case "suspended":
           if (!microapp.suspended) return null;
-          return returnTemplate(state, microapp?.suspension_reason || "", microapp?.suspension_date || null);
+          return returnTemplate(
+            state,
+            microapp?.suspension_reason || "",
+            microapp?.suspension_date || null
+          );
         case "deleted":
           if (!microapp.deleted) return null;
           return returnTemplate(state, "", microapp?.updatedAt || null);
         case "requested to publish":
           if (!requests.hasOwnProperty("attributes")) return null;
-          return returnTemplate(state, "", microapp?.rtp_date || requests.attributes.updatedAt);
+          return returnTemplate(
+            state,
+            "",
+            microapp?.rtp_date || requests.attributes.updatedAt
+          );
         default:
           return null;
       }
@@ -138,28 +150,34 @@ function returnTemplate(state, comment, date) {
 }
 
 async function getRequests(id) {
-  const result = await axios.get(
-    process.env.STRAPI_URL +
-    "/api/publication-requests?populate=*&filters[microapp_id][$eq]=" +
-    id
-  );
-  return result.data?.data[0] || {};
+  return await axios
+    .get(
+      process.env.STRAPI_URL +
+        "/api/publication-requests?populate=*&filters[microapp_id][$eq]=" +
+        id
+    )
+    .then((result) => result.data?.data[0] ?? {})
+    .catch((err) => err);
 }
 
 exports.getProfileId = async function (userId) {
-  return await axios.get(process.env.STRAPI_URL + `/api/profiles?filters[user_id][$eq]=${userId}`)
-  .then(res => {
-    if (res.data.data.length) return res.data.data[0].id
-    return null
-  }).catch(err => err)
-}
+  return await axios
+    .get(
+      process.env.STRAPI_URL + `/api/profiles?filters[user_id][$eq]=${userId}`
+    )
+    .then((res) => {
+      if (res.data.data.length) return res.data.data[0].id;
+      return null;
+    })
+    .catch((err) => err);
+};
 
 exports.logError = function (appId, error) {
-  const errorJson = JSON.stringify(error, null, 2)
-  fs.writeFile('error.txt', errorJson, err => {
-    if (err) console.error('Error writing to log file:', err)
-  })
-}
+  const errorJson = JSON.stringify(error, null, 2);
+  fs.writeFile("error.txt", errorJson, (err) => {
+    if (err) console.error("Error writing to log file:", err);
+  });
+};
 
 /**
  * returns true if value is JSON string else returns false
